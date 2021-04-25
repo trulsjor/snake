@@ -66,7 +66,7 @@ tasks.named<Jar>("jar") {
     archiveBaseName.set("app")
 
     manifest {
-        attributes["Main-Class"] = "no.trulsjor.AppKt"
+        attributes["Main-Class"] = "no.trulsjor.snake.SnakeKt"
         attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(separator = " ") {
             it.name
         }
@@ -79,4 +79,7 @@ tasks.named<Jar>("jar") {
                 it.copyTo(file)
         }
     }
+}
+application {
+    mainClass.set("no.trulsjor.snake.SnakeKt")
 }

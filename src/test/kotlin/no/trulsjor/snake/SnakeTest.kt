@@ -10,56 +10,38 @@ import org.junit.jupiter.api.Test
 internal class SnakeTest {
 
     @Test
-    internal fun `snake can start at whatever`() {
-        val snake = Snake(Point(10,10))
-        assertThat(snake.size()).isEqualTo(1)
-        assertThat(snake.headPoint()).isEqualTo(Point(10, 10))
-    }
-
-    @Test
-    internal fun `snake start at 20,20 default`() {
-        val snake = Snake()
-        assertThat(snake.size()).isEqualTo(1)
-        assertThat(snake.headPoint()).isEqualTo(Point(20, 20))
-    }
-
-    @Test
-    internal fun `snake can grow`() {
-        val snake = Snake()
-        snake.grow(5, LEFT)
-        assertThat(snake.size()).isEqualTo(6)
-    }
-
-    @Test
-    internal fun `snake can move`() {
-        val snake = Snake()
+    internal fun `snake of length 4 cannot collide into its own tail moving in 2x2 grid `() {
+        val snake = Snake(Point(0,0), 4)
         assertTrue(snake.move(RIGHT))
-        assertThat(snake.headPoint()).isEqualTo(Point(21,20))
         assertTrue(snake.move(UP))
-        assertThat(snake.headPoint()).isEqualTo(Point(21,21))
         assertTrue(snake.move(LEFT))
-        assertThat(snake.headPoint()).isEqualTo(Point(20,21))
         assertTrue(snake.move(DOWN))
-        assertThat(snake.headPoint()).isEqualTo(Point(20,20))
-    }
-
-    @Test
-    internal fun `snake moving doesn't change size`() {
-        val snake = Snake()
-        snake.grow(9, LEFT)
-        assertThat(snake.size()).isEqualTo(10)
-        snake.move(RIGHT)
-        assertThat(snake.size()).isEqualTo(10)
-
     }
 
     @Test
     internal fun `move yields false when snake moves into itself`() {
-        val snake = Snake()
-        snake.grow(10, LEFT)
+        val snake = Snake(Point(0,0), 5)
+        assertTrue(snake.move(RIGHT))
         assertTrue(snake.move(UP))
         assertTrue(snake.move(LEFT))
         assertFalse(snake.move(DOWN))
     }
+
+    @Test
+    internal fun `beware of the apple`() {
+        val snake = Snake(Point(0,0), 4, mutableListOf(Point(1, 1)))
+        assertTrue(snake.move(RIGHT))
+        assertTrue(snake.move(UP))
+        assertTrue(snake.move(LEFT))
+        assertFalse(snake.move(DOWN))
+    }
+
+    @Test
+    internal fun `snake on the walls`() {
+        val snake = Snake(dimension = 2)
+        assertTrue(snake.move(RIGHT))
+        assertFalse(snake.move(RIGHT))
+    }
+
 
 }
