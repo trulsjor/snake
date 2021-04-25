@@ -1,18 +1,7 @@
 package no.trulsjor.snake
 
-fun main() {
-    val snake = Snake()
-    println(snake)
-    snake.move(Direction.RIGHT)
-    println(snake)
-}
-
-class Snake(val startPoint: Point = Point.START) {
-    private val body: ArrayDeque<Point> = ArrayDeque(listOf(Point.START))
-
-    //init {
-    //    grow(3, Direction.LEFT)
-    //}
+class Snake(startPoint: Point = Point.START) {
+    private val body: ArrayDeque<Point> = ArrayDeque(listOf(startPoint))
 
     fun headPoint(): Point {
         return Point.of(body.first())
@@ -22,16 +11,15 @@ class Snake(val startPoint: Point = Point.START) {
         return body.size
     }
 
-    fun move(direction: Direction) {
-        body.addFirst(body.first() + direction)
+    fun move(direction: Direction): Boolean {
+        val newHead = body.first() + direction
+        val validMove = !body.contains(newHead)
+        body.addFirst(newHead)
         body.removeLast()
+        return validMove
     }
 
-    fun grow(size: Int, direction: Direction) {
-        for (a in 1..size) {
-            body.add(body.last() + direction)
-        }
-    }
+    fun grow(size: Int, direction: Direction) = (1..size).forEach { _ -> body.add(body.last() + direction) }
 
     override fun toString(): String {
         return body.toString()
@@ -62,10 +50,6 @@ enum class Direction(val x: Int, val y: Int) {
     DOWN(0, -1),
     LEFT(-1, 0),
     RIGHT(1, 0);
-
-    operator fun times(length: Int) {
-        x.times(length)
-    }
 }
 
 
