@@ -62,10 +62,11 @@ class Snake(
     }
 
     private fun getSymbol(point: Point): String {
-        if (body.contains(point)) return "\uD83D\uDC0D"
+        if (body.first() == point) return "\uD83D\uDE0B"
+        if (body.contains(point)) return "\uD83D\uDFE1"
         if (apples.contains(point)) return "\uD83C\uDF4F"
-        if (!point.notInWall(dimension)) return "\uD83E\uDDF1"
-        return "\uD83D\uDFE6"
+        if (!point.notInWall(dimension)) return "\uD83D\uDFEB"
+        return "  "
     }
 }
 
