@@ -1,28 +1,44 @@
 package no.trulsjor.snake
 
-import no.trulsjor.snake.Direction.DOWN
-import no.trulsjor.snake.Direction.LEFT
-import no.trulsjor.snake.Direction.RIGHT
-import no.trulsjor.snake.Direction.UP
 import kotlin.random.Random
 
 fun main() {
-    val snake = Snake(snakeLength = 1,startPoint = Point(10,10), dimension = 20, apples = mutableListOf(Point(3,10), Point(4, 3), Point(8,8)))
+    val snake = Snake(
+        snakeLength = 3,
+        startPoint = Point(10, 10),
+        dimension = 20,
+        apples = mutableListOf(
+            Point(3, 10),
+            Point(4, 3),
+            Point(15, 15),
+            Point(12, 12),
+            Point(17, 6),
+            Point(8, 8)
+        )
+    )
     do {
         snake.draw()
         Thread.sleep(400)
-    } while (snake.move(Direction.random()))
+        val currentDirection = snake.direction()
+        val newDir = listOf(currentDirection, currentDirection.turnLeft(), currentDirection.turnRight(), currentDirection)[Random.nextInt(0, 4)]
+
+    } while (snake.move(newDir))
 }
 
 class Snake(
     startPoint: Point = Point.START,
     private var snakeLength: Int = 4,
+    private var currentDirection: Direction = Direction.UP,
     private val apples: MutableList<Point> = mutableListOf(),
     private val dimension: Int = 20
 ) {
     private val body: ArrayDeque<Point> = ArrayDeque(listOf(startPoint))
 
+
+    fun direction() = currentDirection
+
     fun move(direction: Direction): Boolean {
+        currentDirection = direction
         body.addFirst(body.first() + direction)
         if (apples.contains(body.first())) eat(body.first())
         if (snakeLength < body.size) body.removeLast()
@@ -77,8 +93,24 @@ enum class Direction(val x: Int, val y: Int) {
     LEFT(-1, 0),
     RIGHT(1, 0);
 
-    companion object RandomDirection{
-        fun random(): Direction = listOf(DOWN,LEFT,UP,RIGHT)[Random.nextInt(0,4)]
+    fun turnRight() =
+        when (this) {
+            UP -> RIGHT
+            RIGHT -> DOWN
+            DOWN -> LEFT
+            LEFT -> UP
+        }
+
+    fun turnLeft() =
+        when (this) {
+            UP -> LEFT
+            LEFT -> DOWN
+            DOWN -> RIGHT
+            RIGHT -> UP
+        }
+
+    companion object RandomDirection {
+        fun random(): Direction = listOf(DOWN, LEFT, UP, RIGHT)[Random.nextInt(0, 4)]
     }
 }
 

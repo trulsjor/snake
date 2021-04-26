@@ -29,7 +29,7 @@ internal class SnakeTest {
 
     @Test
     internal fun `beware of the apple`() {
-        val snake = Snake(Point(0,0), 4, mutableListOf(Point(1, 1)))
+        val snake = Snake(Point(0,0), 4, apples = mutableListOf(Point(1, 1)))
         assertTrue(snake.move(RIGHT))
         assertTrue(snake.move(UP))
         assertTrue(snake.move(LEFT))
