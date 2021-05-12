@@ -1,28 +1,25 @@
 package no.trulsjor.snake
 
 import kotlin.random.Random
+import kotlin.random.Random.Default.nextInt
 
 fun main() {
+
+    val dimension = 20
+    fun randomApple() = Point(nextInt(0, dimension), nextInt(0,dimension))
+
+    val initialApples = ((0..30).map { randomApple() }).toMutableList()
     val snake = Snake(
         snakeLength = 3,
         startPoint = Point(10, 10),
-        dimension = 20,
-        apples = mutableListOf(
-            Point(3, 10),
-            Point(4, 3),
-            Point(15, 15),
-            Point(12, 12),
-            Point(17, 6),
-            Point(8, 8)
-        )
+        dimension = dimension,
+        apples = initialApples
     )
     do {
         snake.draw()
-        Thread.sleep(400)
-        val currentDirection = snake.direction()
-        val newDir = listOf(currentDirection, currentDirection.turnLeft(), currentDirection.turnRight(), currentDirection)[Random.nextInt(0, 4)]
+        Thread.sleep(100)
 
-    } while (snake.move(newDir))
+    } while (snake.moveRandomDir())
 }
 
 class Snake(
@@ -35,7 +32,23 @@ class Snake(
     private val body: ArrayDeque<Point> = ArrayDeque(listOf(startPoint))
 
 
-    fun direction() = currentDirection
+    fun moveRandomDir(tries: Int = 10): Boolean {
+        val newDir = listOf(
+            currentDirection,
+            currentDirection.turnLeft(),
+            currentDirection.turnRight(),
+            currentDirection
+        )[nextInt(0, 4)]
+        println("Moving $newDir, $tries remaining")
+        val candidatePoint = body.first() + newDir
+        val canMove = !body.contains(candidatePoint) && candidatePoint.notInWall(dimension)
+
+        return if (tries > 0) when {
+            canMove -> move(newDir)
+            else -> moveRandomDir(tries-1)
+        } else false
+    }
+
 
     fun move(direction: Direction): Boolean {
         currentDirection = direction
@@ -111,7 +124,7 @@ enum class Direction(val x: Int, val y: Int) {
         }
 
     companion object RandomDirection {
-        fun random(): Direction = listOf(DOWN, LEFT, UP, RIGHT)[Random.nextInt(0, 4)]
+        fun random(): Direction = listOf(DOWN, LEFT, UP, RIGHT)[nextInt(0, 4)]
     }
 }
 
