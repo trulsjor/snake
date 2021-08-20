@@ -42,8 +42,8 @@ class GameOfLife(
     }
 
     private fun getSymbol(cell: Cell) = when {
-        currentGeneration.contains(cell) -> "🔴"
-        else -> "⚪"
+        currentGeneration.isAlive(cell) -> "🟥"
+        else -> "⬜"
     }
 
     class Generation(private val cells: Set<Cell> = setOf()) {
@@ -53,13 +53,15 @@ class GameOfLife(
                 .filter { staysAlive(it) || getsBorn(it) }.toSet()
         )
 
-        fun contains(cell: Cell) = cells.contains(cell)
-        private fun staysAlive(cell: Cell) = this.contains(cell) && listOf(2, 3).contains(cell.neighbourCells().count { this.contains(it) })
-        private fun getsBorn(cell: Cell) = !this.contains(cell) && cell.neighbourCells().count { this.contains(it) } == 3
+        fun isAlive(cell: Cell) = cells.contains(cell)
+        private fun staysAlive(cell: Cell) = this.isAlive(cell) && listOf(2, 3).contains(cell.neighbourCellsAliveCount { this.isAlive(it) })
+        private fun getsBorn(cell: Cell) = !this.isAlive(cell) && cell.neighbourCellsAliveCount{ this.isAlive(it) } == 3
     }
 
     data class Cell(private val x: Int, private val y: Int) {
-        fun neighbourCells() = listOf(
+        fun neighbourCellsAliveCount(f: (Cell) -> Boolean) = neighbourCells().count { f(it) }
+
+        private fun neighbourCells() = listOf(
             Cell(x + 1, y - 1),
             Cell(x + 1, y),
             Cell(x + 1, y + 1),
@@ -70,8 +72,8 @@ class GameOfLife(
             Cell(x - 1, y + 1)
         )
 
-        override fun toString(): String {
-            return "($x,$y)"
-        }
+
+        override fun toString() = "($x,$y)"
+
     }
 }
