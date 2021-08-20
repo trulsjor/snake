@@ -23,4 +23,14 @@ internal class GameOfLifeTest(){
     internal fun maintest(){
         main()
     }
+
+
+    @Test
+    internal fun boxing(){
+        (20 downTo 0).map{x ->
+            (0 .. 20).map{y ->
+                println(Cell(x,y))
+            }
+        }
+    }
 }
