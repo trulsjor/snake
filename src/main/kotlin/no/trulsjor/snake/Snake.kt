@@ -1,6 +1,5 @@
 package no.trulsjor.snake
 
-import kotlin.random.Random
 import kotlin.random.Random.Default.nextInt
 
 fun main() {
@@ -64,6 +63,8 @@ class Snake(
     }
 
     override fun toString(): String = body.toString()
+
+
     fun draw() {
         for (y in dimension downTo -1) {
             for (x in -1..dimension) {
